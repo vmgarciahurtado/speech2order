@@ -3,6 +3,47 @@ import 'package:speech2order/model.dart';
 
 List<Speech2OrderProduct> searchProducts(
     List<Speech2OrderProduct> productos, List<String> palabrasClave) {
+  // ... (Normalization code remains the same)
+
+  // Create Fuzzy instances for both title and barcode
+  final fuseTitle = Fuzzy(
+    productos.map((p) => p.title).toList(),
+    options: FuzzyOptions(
+      findAllMatches: true,
+      tokenize: true,
+      threshold: 0.5, // Adjust threshold as needed
+    ),
+  );
+  final fuseBarCode = Fuzzy(
+    productos.map((p) => p.barCode).toList(),
+    options: FuzzyOptions(
+      findAllMatches: true,
+      tokenize: true,
+      threshold: 0.8, // Potentially higher threshold for barcodes
+    ),
+  );
+
+  // Search for each keyword in both title and barcode
+  final titleResults =
+      palabrasClave.map((palabra) => fuseTitle.search(palabra)).toList();
+  final barCodeResults =
+      palabrasClave.map((palabra) => fuseBarCode.search(palabra)).toList();
+
+  // Combine results, flatten, sort, and extract top products
+  final allResults =
+      [...titleResults, ...barCodeResults].expand((list) => list).toList();
+  allResults.sort((a, b) => b.score.compareTo(a.score));
+  final topProducts = allResults
+      .take(20)
+      .map((result) => productos.firstWhere(
+          (p) => (p.title == result.item) || (p.barCode == result.item)))
+      .toList();
+
+  return topProducts.toSet().toList(); // Remove duplicates
+}
+
+List<Speech2OrderProduct> searchProducts4(
+    List<Speech2OrderProduct> productos, List<String> palabrasClave) {
   // Normalize keywords and product titles
   palabrasClave = palabrasClave
       .map((palabra) => palabra
