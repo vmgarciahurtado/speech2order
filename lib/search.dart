@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:fuzzy/fuzzy.dart';
 import 'package:speech2order/model.dart';
 
@@ -102,7 +101,21 @@ List<Speech2OrderProduct> searchProducts(
     final topProducts =
         combinedResults.take(20).map((result) => result.keys.first).toList();
 
-    return topProducts;
+    if (topProducts.isNotEmpty) {
+      return topProducts;
+    } else {
+      return productos
+          .where((producto) => palabrasClave.every((palabra) => producto.title
+              .toLowerCase()
+              .replaceAll(RegExp(r'[áàâãäå]'), 'a')
+              .replaceAll(RegExp(r'[éèêë]'), 'e')
+              .replaceAll(RegExp(r'[íìîï]'), 'i')
+              .replaceAll(RegExp(r'[óòôõöø]'), 'o')
+              .replaceAll(RegExp(r'[úùûü]'), 'u')
+              .contains(palabra)))
+          .take(20)
+          .toList();
+    }
   }
 }
 
