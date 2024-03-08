@@ -39,18 +39,8 @@ List<Speech2OrderProduct> searchProducts(
       return [];
     }
   } else {
-    final productosCoincidentes = productos.where((producto) =>
-        palabrasClave.every((palabra) => producto.title
-            .toLowerCase()
-            .replaceAll(RegExp(r'[áàâãäå]'), 'a')
-            .replaceAll(RegExp(r'[éèêë]'), 'e')
-            .replaceAll(RegExp(r'[íìîï]'), 'i')
-            .replaceAll(RegExp(r'[óòôõöø]'), 'o')
-            .replaceAll(RegExp(r'[úùûü]'), 'u')
-            .contains(palabra)));
-
     final fuse = Fuzzy(
-      productosCoincidentes.map((p) => p.title).toList(),
+      productos.map((p) => p.title).toList(),
       options: FuzzyOptions(
         findAllMatches: true,
         tokenize: true,
@@ -59,20 +49,46 @@ List<Speech2OrderProduct> searchProducts(
     );
 
     // Search for each keyword
-    final results =
-        palabrasClave.map((palabra) => fuse.search(palabra)).toList();
-
-    // Flatten results and sort by score (highest first)
-    final allResults = results.expand((list) => list).toList();
-    allResults.sort((a, b) => b.score.compareTo(a.score));
-
-    // Extract top 20 products (considering duplicates)
-    final topProducts = allResults
-        .take(20)
-        .map((result) => productos.firstWhere((p) => p.title == result.item))
+    final results = palabrasClave
+        .map((palabra) =>
+            fuse.search(palabra)..sort((a, b) => b.score.compareTo(a.score)))
         .toList();
 
-    return topProducts.toSet().toList();
+    // Combine results with weighted scores
+    final combinedResults = <Map<Speech2OrderProduct, double>>[];
+    for (var product in productos) {
+      double totalScore = 0.0;
+      for (var i = 0; i < palabrasClave.length; i++) {
+        final resultForKeyword = results[i]
+            .firstWhereOrNull((result) => result.item == product.title);
+        if (resultForKeyword != null) {
+          totalScore += resultForKeyword.score / (i + 1);
+        }
+      }
+      if (totalScore > 0) {
+        combinedResults.add({product: totalScore});
+      }
+    }
+
+    // Sort combined results by total score (highest first)
+    combinedResults.sort((a, b) => b.values.first.compareTo(a.values.first));
+
+    // Extract top 20 products
+    final topProducts =
+        combinedResults.take(20).map((result) => result.keys.first).toList();
+
+    return topProducts;
+  }
+}
+
+extension ListExtension<T> on List<T> {
+  T? firstWhereOrNull(bool Function(T) test) {
+    for (var item in this) {
+      if (test(item)) {
+        return item;
+      }
+    }
+    return null;
   }
 }
 
