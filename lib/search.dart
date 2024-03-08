@@ -48,13 +48,23 @@ List<Speech2OrderProduct> searchProducts(
       ),
     );
 
-    // Search for each keyword
+    // Search for the full phrase
+    final phraseResults = fuse.search(palabrasClave.join(' '))
+      ..sort((a, b) => b.score.compareTo(a.score));
+
+    // If there are good matches for the full phrase, use those
+    if (phraseResults.isNotEmpty && phraseResults.first.score >= 0.7) {
+      return phraseResults
+          .map((result) => productos.firstWhere((p) => p.title == result.item))
+          .toList();
+    }
+
+    // Otherwise, combine results for individual keywords with weighted scores
     final results = palabrasClave
         .map((palabra) =>
             fuse.search(palabra)..sort((a, b) => b.score.compareTo(a.score)))
         .toList();
 
-    // Combine results with weighted scores
     final combinedResults = <Map<Speech2OrderProduct, double>>[];
     for (var product in productos) {
       double totalScore = 0.0;
@@ -70,10 +80,8 @@ List<Speech2OrderProduct> searchProducts(
       }
     }
 
-    // Sort combined results by total score (highest first)
     combinedResults.sort((a, b) => b.values.first.compareTo(a.values.first));
 
-    // Extract top 20 products
     final topProducts =
         combinedResults.take(20).map((result) => result.keys.first).toList();
 
