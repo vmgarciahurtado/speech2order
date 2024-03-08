@@ -44,7 +44,8 @@ List<Speech2OrderProduct> searchProducts(
       options: FuzzyOptions(
         findAllMatches: true,
         tokenize: true,
-        threshold: 0.5, // Adjust threshold as needed
+        threshold:
+            0.3, // Reducir el umbral para buscar coincidencias más aproximadas
       ),
     );
 
@@ -52,8 +53,8 @@ List<Speech2OrderProduct> searchProducts(
     final phraseResults = fuse.search(palabrasClave.join(' '))
       ..sort((a, b) => b.score.compareTo(a.score));
 
-    // If there are good matches for the full phrase, use those
-    if (phraseResults.isNotEmpty && phraseResults.first.score >= 0.7) {
+    // If there are matches for the full phrase, use those
+    if (phraseResults.isNotEmpty) {
       return phraseResults
           .map((result) => productos.firstWhere((p) => p.title == result.item))
           .toList();
@@ -68,14 +69,18 @@ List<Speech2OrderProduct> searchProducts(
     final combinedResults = <Map<Speech2OrderProduct, double>>[];
     for (var product in productos) {
       double totalScore = 0.0;
+      List<double> keywordScores = [];
       for (var i = 0; i < palabrasClave.length; i++) {
         final resultForKeyword = results[i]
             .firstWhereOrNull((result) => result.item == product.title);
         if (resultForKeyword != null) {
-          totalScore += resultForKeyword.score / (i + 1);
+          totalScore += resultForKeyword.score;
+          keywordScores.add(resultForKeyword.score);
         }
       }
       if (totalScore > 0) {
+        // Dar más peso a las coincidencias con todas las palabras clave
+        totalScore *= keywordScores.length / palabrasClave.length;
         combinedResults.add({product: totalScore});
       }
     }
