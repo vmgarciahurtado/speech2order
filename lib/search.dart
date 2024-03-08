@@ -39,8 +39,18 @@ List<Speech2OrderProduct> searchProducts(
       return [];
     }
   } else {
+    final productosCoincidentes = productos.where((producto) =>
+        palabrasClave.every((palabra) => producto.title
+            .toLowerCase()
+            .replaceAll(RegExp(r'[áàâãäå]'), 'a')
+            .replaceAll(RegExp(r'[éèêë]'), 'e')
+            .replaceAll(RegExp(r'[íìîï]'), 'i')
+            .replaceAll(RegExp(r'[óòôõöø]'), 'o')
+            .replaceAll(RegExp(r'[úùûü]'), 'u')
+            .contains(palabra)));
+
     final fuse = Fuzzy(
-      productos.map((p) => p.title).toList(),
+      productosCoincidentes.map((p) => p.title).toList(),
       options: FuzzyOptions(
         findAllMatches: true,
         tokenize: true,
