@@ -87,59 +87,51 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PopScope(
-        canPop: true,
-        onPopInvoked: (didPop) {
-          _recognitionResult.clear();
-          Navigator.of(context).pop([]);
-        },
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    // If listening is active show the recognized words
-                    _speechToText.isListening
-                        ? _lastWords
-                        // If listening isn't active but could be tell the user
-                        // how to start it, otherwise indicate that speech
-                        // recognition is not yet ready or not supported on
-                        // the target device
-                        : _speechEnabled
-                            ? 'Tap the microphone to start listening...'
-                            : 'Speech not available',
-                  ),
+      body: SafeArea(
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Text(
+                  // If listening is active show the recognized words
+                  _speechToText.isListening
+                      ? _lastWords
+                      // If listening isn't active but could be tell the user
+                      // how to start it, otherwise indicate that speech
+                      // recognition is not yet ready or not supported on
+                      // the target device
+                      : _speechEnabled
+                          ? 'Tap the microphone to start listening...'
+                          : 'Speech not available',
                 ),
-                Expanded(
-                  child: _recognitionResult.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: _recognitionResult.length,
-                          itemBuilder: (context, index) {
-                            String title = _recognitionResult[index]['title'];
-                            String code = _recognitionResult[index]['code'];
-                            int quantity =
-                                _recognitionResult[index]['quantity'];
+              ),
+              Expanded(
+                child: _recognitionResult.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: _recognitionResult.length,
+                        itemBuilder: (context, index) {
+                          String title = _recognitionResult[index]['title'];
+                          String code = _recognitionResult[index]['code'];
+                          int quantity = _recognitionResult[index]['quantity'];
 
-                            return Container(
-                                color: Colors.lightBlue,
-                                margin: const EdgeInsets.all(10),
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                        'title: $title\ncode: $code\nquantity: $quantity',
-                                        style: _textStyle),
-                                  ],
-                                ));
-                          },
-                        )
-                      : const Text("No results yet"),
-                )
-              ],
-            ),
+                          return Container(
+                              color: Colors.lightBlue,
+                              margin: const EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
+                              child: Column(
+                                children: [
+                                  Text(
+                                      'title: $title\ncode: $code\nquantity: $quantity',
+                                      style: _textStyle),
+                                ],
+                              ));
+                        },
+                      )
+                    : const Text("No results yet"),
+              )
+            ],
           ),
         ),
       ),
