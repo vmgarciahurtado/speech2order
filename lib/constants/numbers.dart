@@ -1,3 +1,5 @@
+/// This map is used to convert written numbers (e.g., "one") to their
+/// numeric equivalents (e.g., 1) during speech recognition text processing.
 final Map<String, int> numbersByTextName = {
   'cero': 0,
   'uno': 1,

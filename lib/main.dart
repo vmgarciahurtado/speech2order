@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:speech2order/model.dart';
-import 'package:speech2order/process_record.dart';
+import 'package:speech2order/proccess_speech.dart';
 import 'package:speech2order/select_products_dialog.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -29,7 +29,6 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
     _initSpeech();
   }
 
-  /// This has to happen only once per app
   void _initSpeech() async {
     _speechEnabled = await _speechToText.initialize();
     setState(() {});
@@ -58,7 +57,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
     });
 
     if (_speechToText.isNotListening) {
-      List<Map<String, dynamic>> response = await proccesRecordResult(
+      List<Map<String, dynamic>> response = await proccesSpeechResult(
           speechText: result.recognizedWords, products: widget.products);
       if (response.isNotEmpty) {
         if (response.length <= 1) {
