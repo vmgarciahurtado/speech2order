@@ -28,31 +28,42 @@ List<Speech2OrderProduct> searchProducts(
           barCode: producto.barCode))
       .toList();
 
-  // Create Fuzzy instance with options
-  final fuse = Fuzzy(
-    productos.map((p) => searchByCode ? p.barCode : p.title).toList(),
-    options: FuzzyOptions(
-      findAllMatches: true,
-      tokenize: true,
-      threshold: 0.5, // Adjust threshold as needed
-    ),
-  );
+  if (searchByCode) {
+    if (palabrasClave.every((palabra) => RegExp(r'^\d+$').hasMatch(palabra))) {
+      return productos
+          .where((producto) => palabrasClave.any((ultimos4Digitos) =>
+              producto.barCode.toLowerCase().endsWith(ultimos4Digitos)))
+          .take(20)
+          .toList();
+    } else {
+      return [];
+    }
+  } else {
+    final fuse = Fuzzy(
+      productos.map((p) => p.title).toList(),
+      options: FuzzyOptions(
+        findAllMatches: true,
+        tokenize: true,
+        threshold: 0.5, // Adjust threshold as needed
+      ),
+    );
 
-  // Search for each keyword
-  final results = palabrasClave.map((palabra) => fuse.search(palabra)).toList();
+    // Search for each keyword
+    final results =
+        palabrasClave.map((palabra) => fuse.search(palabra)).toList();
 
-  // Flatten results and sort by score (highest first)
-  final allResults = results.expand((list) => list).toList();
-  allResults.sort((a, b) => b.score.compareTo(a.score));
+    // Flatten results and sort by score (highest first)
+    final allResults = results.expand((list) => list).toList();
+    allResults.sort((a, b) => b.score.compareTo(a.score));
 
-  // Extract top 20 products (considering duplicates)
-  final topProducts = allResults
-      .take(20)
-      .map((result) => productos.firstWhere(
-          (p) => (searchByCode ? p.barCode : p.title) == result.item))
-      .toList();
+    // Extract top 20 products (considering duplicates)
+    final topProducts = allResults
+        .take(20)
+        .map((result) => productos.firstWhere((p) => p.title == result.item))
+        .toList();
 
-  return topProducts.toSet().toList(); // Remove duplicates
+    return topProducts.toSet().toList();
+  }
 }
 
 List<Speech2OrderProduct> searchProducts2(
