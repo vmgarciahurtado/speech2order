@@ -16,7 +16,7 @@ import 'package:speech2order/model.dart';
 List<Speech2OrderProduct> searchProducts(
     List<Speech2OrderProduct> productos, List<String> palabrasClave) {
   bool searchByCode =
-      RegExp(r'^\[0-9\].*').hasMatch(palabrasClave.first.characters.first);
+      RegExp(r'^[0-9]').hasMatch(palabrasClave.first.characters.first);
 
   // Normalize keywords and product titles
   palabrasClave = palabrasClave
