@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:fuzzy/fuzzy.dart';
 import 'package:speech2order/model.dart';
 
@@ -14,7 +15,8 @@ import 'package:speech2order/model.dart';
 /// Devuelve una lista de [Speech2OrderProduct] que coinciden con las palabras clave, ordenados por relevancia.
 List<Speech2OrderProduct> searchProducts(
     List<Speech2OrderProduct> productos, List<String> palabrasClave) {
-  bool searchByCode = RegExp(r'^\[0-9\].*').hasMatch(palabrasClave.first);
+  bool searchByCode =
+      RegExp(r'^\[0-9\].*').hasMatch(palabrasClave.first.characters.first);
 
   // Normalize keywords and product titles
   palabrasClave = palabrasClave
