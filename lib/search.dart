@@ -143,7 +143,7 @@ import 'package:speech2order/model.dart';
 ///
 /// En la búsqueda por título, se intenta encontrar coincidencias para la frase completa.
 /// Si no se encuentran coincidencias para la frase completa, se realiza una búsqueda por frase parcial.
-/// Si no se encuentran coincidencias para la frase parcial, se realiza una búsqueda por prefijos de la palabra clave.
+/// Si no se encuentran coincidencias para la frase parcial, se realiza una búsqueda por prefijos de cada palabra clave.
 ///
 /// Los títulos de los productos y las palabras clave se normalizan eliminando tildes y convirtiendo a minúsculas antes de la búsqueda.
 ///
@@ -219,6 +219,28 @@ List<Speech2OrderProduct> searchProducts(
           .toList();
     }
 
+    // Search for prefixes of each keyword
+    final keywordResults = <Speech2OrderProduct>[];
+    for (final keyword in palabrasClave) {
+      const minPrefixLength = 4;
+      for (int i = keyword.length - 1; i >= minPrefixLength - 1; i--) {
+        final prefixResults = fuse.search(keyword.substring(0, i + 1))
+          ..sort((a, b) => b.score.compareTo(a.score));
+
+        if (prefixResults.isNotEmpty) {
+          keywordResults.addAll(prefixResults
+              .map((result) =>
+                  productos.firstWhere((p) => p.title == result.item))
+              .toList());
+          break;
+        }
+      }
+    }
+
+    if (keywordResults.isNotEmpty) {
+      return keywordResults.toList();
+    }
+
     // Otherwise, combine results for individual keywords with weighted scores
     final results = palabrasClave
         .map((palabra) =>
@@ -251,24 +273,19 @@ List<Speech2OrderProduct> searchProducts(
 
     if (topProducts.isNotEmpty) {
       return topProducts;
+    } else {
+      return productos
+          .where((producto) => palabrasClave.every((palabra) => producto.title
+              .toLowerCase()
+              .replaceAll(RegExp(r'[áàâãäå]'), 'a')
+              .replaceAll(RegExp(r'[éèêë]'), 'e')
+              .replaceAll(RegExp(r'[íìîï]'), 'i')
+              .replaceAll(RegExp(r'[óòôõöø]'), 'o')
+              .replaceAll(RegExp(r'[úùûü]'), 'u')
+              .contains(palabra)))
+          .take(20)
+          .toList();
     }
-
-    // Search for prefixes of the keyword
-    final keyword = palabrasClave.join(' ');
-    const minPrefixLength = 4;
-    for (int i = keyword.length - 1; i >= minPrefixLength - 1; i--) {
-      final prefixResults = fuse.search(keyword.substring(0, i + 1))
-        ..sort((a, b) => b.score.compareTo(a.score));
-
-      if (prefixResults.isNotEmpty) {
-        return prefixResults
-            .map(
-                (result) => productos.firstWhere((p) => p.title == result.item))
-            .toList();
-      }
-    }
-
-    return [];
   }
 }
 
