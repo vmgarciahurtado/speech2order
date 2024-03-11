@@ -138,6 +138,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
+            heroTag: 'listen',
             onPressed:
                 // If not yet listening for speech start, otherwise stop
                 _speechToText.isNotListening ? _startListening : _stopListening,
@@ -151,6 +152,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
           Visibility(
             visible: _recognitionResult.isNotEmpty,
             child: FloatingActionButton(
+              heroTag: 'clear',
               onPressed: () {
                 _recognitionResult.clear();
                 setState(() {});
@@ -168,6 +170,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
           Visibility(
             visible: _recognitionResult.isNotEmpty,
             child: FloatingActionButton(
+              heroTag: 'complete',
               onPressed: () {
                 Navigator.of(context).pop(_recognitionResult);
               },
