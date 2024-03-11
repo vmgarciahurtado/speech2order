@@ -204,6 +204,9 @@ List<Speech2OrderProduct> searchProducts(
     if (phraseResults.isNotEmpty) {
       return phraseResults
           .map((result) => productos.firstWhere((p) => p.title == result.item))
+          .take(20)
+          .toList()
+          .reversed
           .toList();
     }
 
@@ -216,6 +219,9 @@ List<Speech2OrderProduct> searchProducts(
     if (partialPhraseResults.isNotEmpty) {
       return partialPhraseResults
           .map((result) => productos.firstWhere((p) => p.title == result.item))
+          .take(20)
+          .toList()
+          .reversed
           .toList();
     }
 
