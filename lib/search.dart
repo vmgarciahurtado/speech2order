@@ -143,7 +143,7 @@ import 'package:speech2order/model.dart';
 ///
 /// En la búsqueda por título, se intenta encontrar coincidencias para la frase completa.
 /// Si no se encuentran coincidencias para la frase completa, se realiza una búsqueda por frase parcial.
-/// Si no se encuentran coincidencias para la frase parcial, se combinan los resultados para cada palabra clave individual con ponderación.
+/// Si no se encuentran coincidencias para la frase parcial, se realiza una búsqueda por prefijos de la palabra clave.
 ///
 /// Los títulos de los productos y las palabras clave se normalizan eliminando tildes y convirtiendo a minúsculas antes de la búsqueda.
 ///
@@ -217,6 +217,20 @@ List<Speech2OrderProduct> searchProducts(
       return partialPhraseResults
           .map((result) => productos.firstWhere((p) => p.title == result.item))
           .toList();
+    }
+
+    // Search for prefixes of the keyword
+    final keyword = palabrasClave.join(' ');
+    for (int i = keyword.length - 1; i >= 0; i--) {
+      final prefixResults = fuse.search(keyword.substring(0, i + 1))
+        ..sort((a, b) => b.score.compareTo(a.score));
+
+      if (prefixResults.isNotEmpty) {
+        return prefixResults
+            .map(
+                (result) => productos.firstWhere((p) => p.title == result.item))
+            .toList();
+      }
     }
 
     // Otherwise, combine results for individual keywords with weighted scores
