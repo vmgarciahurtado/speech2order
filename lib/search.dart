@@ -227,24 +227,24 @@ List<Speech2OrderProduct> searchProducts(
 
     // Search for prefixes of each keyword
     final keywordResults = <Speech2OrderProduct>[];
-    for (final keyword in palabrasClave) {
-      const minPrefixLength = 4;
-      for (int i = keyword.length - 1; i >= minPrefixLength - 1; i--) {
-        final prefixResults = fuse.search(keyword.substring(0, i + 1))
-          ..sort((a, b) => b.score.compareTo(a.score));
+    const minPrefixLength = 4;
+    for (int i = palabrasClave.first.length - 1;
+        i >= minPrefixLength - 1;
+        i--) {
+      final prefixResults = fuse.search(palabrasClave.first.substring(0, i + 1))
+        ..sort((a, b) => b.score.compareTo(a.score));
 
-        if (prefixResults.isNotEmpty) {
-          keywordResults.addAll(prefixResults
-              .map((result) =>
-                  productos.firstWhere((p) => p.title == result.item))
-              .toList());
-          break;
-        }
+      if (prefixResults.isNotEmpty) {
+        keywordResults.addAll(prefixResults
+            .map(
+                (result) => productos.firstWhere((p) => p.title == result.item))
+            .toList());
+        break;
       }
     }
 
     if (keywordResults.isNotEmpty) {
-      return keywordResults.toList();
+      return keywordResults.take(20).toList();
     }
 
     // Otherwise, combine results for individual keywords with weighted scores
@@ -280,17 +280,7 @@ List<Speech2OrderProduct> searchProducts(
     if (topProducts.isNotEmpty) {
       return topProducts;
     } else {
-      return productos
-          .where((producto) => palabrasClave.every((palabra) => producto.title
-              .toLowerCase()
-              .replaceAll(RegExp(r'[áàâãäå]'), 'a')
-              .replaceAll(RegExp(r'[éèêë]'), 'e')
-              .replaceAll(RegExp(r'[íìîï]'), 'i')
-              .replaceAll(RegExp(r'[óòôõöø]'), 'o')
-              .replaceAll(RegExp(r'[úùûü]'), 'u')
-              .contains(palabra)))
-          .take(20)
-          .toList();
+      return [];
     }
   }
 }
