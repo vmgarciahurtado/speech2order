@@ -116,6 +116,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           int quantity = _recognitionResult[index]['quantity'];
                           return Card(
                             color: Colors.white,
+                            margin: const EdgeInsets.all(10),
                             elevation: 8,
                             child: Column(
                               children: [
