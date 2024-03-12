@@ -115,10 +115,9 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           String code = _recognitionResult[index]['code'];
                           int quantity = _recognitionResult[index]['quantity'];
                           return Container(
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(10),
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
+                                  color: Colors.white,
                                   borderRadius: BorderRadius.circular(20)),
                               child: Card(
                                 elevation: 8,
