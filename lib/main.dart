@@ -114,27 +114,23 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           String title = _recognitionResult[index]['title'];
                           String code = _recognitionResult[index]['code'];
                           int quantity = _recognitionResult[index]['quantity'];
-                          return Container(
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Card(
-                                color: Colors.white,
-                                elevation: 8,
-                                child: Column(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 15, horizontal: 15),
-                                      child: Text(
-                                        'title: $title\ncode: $code\nquantity: $quantity',
-                                        style: _textStyle,
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                  ],
+                          return Card(
+                            color: Colors.white,
+                            elevation: 8,
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15, horizontal: 15),
+                                  child: Text(
+                                    'title: $title\ncode: $code\nquantity: $quantity',
+                                    style: _textStyle,
+                                    textAlign: TextAlign.start,
+                                  ),
                                 ),
-                              ));
+                              ],
+                            ),
+                          );
                         },
                       )
                     : const Text("No results yet"),
