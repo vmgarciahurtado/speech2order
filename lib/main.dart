@@ -114,17 +114,22 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           String title = _recognitionResult[index]['title'];
                           String code = _recognitionResult[index]['code'];
                           int quantity = _recognitionResult[index]['quantity'];
-
                           return Container(
-                              color: Colors.lightBlue,
                               margin: const EdgeInsets.all(10),
                               padding: const EdgeInsets.all(10),
-                              child: Column(
-                                children: [
-                                  Text(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Card(
+                                elevation: 8,
+                                child: Column(
+                                  children: [
+                                    Text(
                                       'title: $title\ncode: $code\nquantity: $quantity',
-                                      style: _textStyle),
-                                ],
+                                      style: _textStyle,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ],
+                                ),
                               ));
                         },
                       )
