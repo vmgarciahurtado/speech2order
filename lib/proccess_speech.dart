@@ -1,3 +1,4 @@
+import 'package:speech2order/constants/dictionary.dart';
 import 'package:speech2order/constants/numbers.dart';
 import 'package:speech2order/model.dart';
 import 'package:speech2order/search.dart';
@@ -23,17 +24,19 @@ Future<List<Map<String, dynamic>>> proccesSpeechResult({
   List<Map<String, dynamic>> response = [];
 
   // Process speech text
-  List<String> processedWords = processWords(speechText);
+  List<String> processedText = processNumbers(speechText);
 
   // Extract and remove product quantity (implementations assumed elsewhere)
-  int productQuantity = processProductQuantity(processedWords);
+  int productQuantity = processProductQuantity(processedText);
   if (productQuantity > 0) {
-    processedWords = removeProductQuantity(processedWords);
+    processedText = removeProductQuantity(processedText);
   }
+
+  processedText = processWords(processedText.join(' '));
 
   // Search for products based on processed words
   List<Speech2OrderProduct> productsBySearch =
-      searchProducts(products, processedWords);
+      searchProducts(products, processedText);
 
   // Build response with product information if found
   if (productsBySearch.isNotEmpty) {
@@ -53,10 +56,31 @@ Future<List<Map<String, dynamic>>> proccesSpeechResult({
   }
 }
 
-///   * `processWords`: Splits text into words, replaces written-out numbers
+/// Procesa las palabras del texto reemplazándolas por sus abreviaturas si existen en el diccionario.
+List<String> processWords(String text) {
+  final words = text.split(' ');
+
+  for (int i = 0; i < words.length; i++) {
+    final word = words[i];
+
+    if (wordAbbreviations.containsKey(word)) {
+      final abbreviations = wordAbbreviations[word]!;
+      words.replaceRange(
+        i,
+        i + 1,
+        [word, ...abbreviations],
+      );
+      i += abbreviations.length;
+    }
+  }
+
+  return words;
+}
+
+///   * `processNumbers`: Splits text into words, replaces written-out numbers
 ///     with numeric equivalents, groups sequences of digits, and identifies
 ///     quantities with "x" followed by a number.
-List<String> processWords(String text) {
+List<String> processNumbers(String text) {
   final words = text.split(' ');
 
   for (int i = 0; i < words.length; i++) {
