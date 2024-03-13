@@ -23,16 +23,19 @@ Future<List<Map<String, dynamic>>> proccesSpeechResult({
 
   List<Map<String, dynamic>> response = [];
 
-  // Process speech text
-  List<String> processedText = processNumbers(speechText);
+  products = normalizeProducts(products);
 
+  // Process speech text
+  List<String> processedText = normalizeWords(speechText.split(' '));
+
+  processedText = processNumbers(speechText);
   // Extract and remove product quantity (implementations assumed elsewhere)
   int productQuantity = processProductQuantity(processedText);
   if (productQuantity > 0) {
     processedText = removeProductQuantity(processedText);
   }
 
-  processedText = processWords(processedText.join(' '));
+  processedText = processDictionaryWords(processedText.join(' '));
 
   // Search for products based on processed words
   List<Speech2OrderProduct> productsBySearch =
@@ -56,15 +59,47 @@ Future<List<Map<String, dynamic>>> proccesSpeechResult({
   }
 }
 
+List<String> normalizeWords(List<String> words) {
+  // Normalize keywords
+  return words = words
+      .map((word) => word
+          .trim()
+          .toLowerCase()
+          .replaceAll(RegExp(r'[áàâãäå]'), 'a')
+          .replaceAll(RegExp(r'[éèêë]'), 'e')
+          .replaceAll(RegExp(r'[íìîï]'), 'i')
+          .replaceAll(RegExp(r'[óòôõöø]'), 'o')
+          .replaceAll(RegExp(r'[úùûü]'), 'u')
+          .replaceAll(RegExp(r'[.?!-]'), ''))
+      .toList();
+}
+
+List<Speech2OrderProduct> normalizeProducts(
+    List<Speech2OrderProduct> products) {
+  // Normalize product titles
+  return products = products
+      .map((producto) => Speech2OrderProduct(
+          title: producto.title
+              .toLowerCase()
+              .replaceAll(RegExp(r'[áàâãäå]'), 'a')
+              .replaceAll(RegExp(r'[éèêë]'), 'e')
+              .replaceAll(RegExp(r'[íìîï]'), 'i')
+              .replaceAll(RegExp(r'[óòôõöø]'), 'o')
+              .replaceAll(RegExp(r'[úùûü]'), 'u')
+              .replaceAll(RegExp(r'[.?!-]'), ''),
+          barCode: producto.barCode))
+      .toList();
+}
+
 /// Procesa las palabras del texto reemplazándolas por sus abreviaturas si existen en el diccionario.
-List<String> processWords(String text) {
+List<String> processDictionaryWords(String text) {
   final words = text.split(' ');
 
   for (int i = 0; i < words.length; i++) {
     final word = words[i];
 
-    if (wordAbbreviations.containsKey(word)) {
-      final abbreviations = wordAbbreviations[word]!;
+    if (dictionary.containsKey(word)) {
+      final abbreviations = dictionary[word]!;
       words.replaceRange(
         i,
         i + 1,

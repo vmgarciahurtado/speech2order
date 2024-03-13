@@ -18,30 +18,6 @@ List<Speech2OrderProduct> searchProducts(
   bool searchByCode = RegExp(r'^[0-9]').hasMatch(palabrasClave.first);
   const productsToTake = 20;
 
-  // Normalize keywords and product titles
-  palabrasClave = palabrasClave
-      .map((palabra) => palabra
-          .trim()
-          .toLowerCase()
-          .replaceAll(RegExp(r'[áàâãäå]'), 'a')
-          .replaceAll(RegExp(r'[éèêë]'), 'e')
-          .replaceAll(RegExp(r'[íìîï]'), 'i')
-          .replaceAll(RegExp(r'[óòôõöø]'), 'o')
-          .replaceAll(RegExp(r'[úùûü]'), 'u'))
-      .toList();
-
-  productos = productos
-      .map((producto) => Speech2OrderProduct(
-          title: producto.title
-              .toLowerCase()
-              .replaceAll(RegExp(r'[áàâãäå]'), 'a')
-              .replaceAll(RegExp(r'[éèêë]'), 'e')
-              .replaceAll(RegExp(r'[íìîï]'), 'i')
-              .replaceAll(RegExp(r'[óòôõöø]'), 'o')
-              .replaceAll(RegExp(r'[úùûü]'), 'u'),
-          barCode: producto.barCode))
-      .toList();
-
   if (searchByCode) {
     if (palabrasClave.every((palabra) => RegExp(r'^\d+$').hasMatch(palabra))) {
       return productos
