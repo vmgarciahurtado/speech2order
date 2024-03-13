@@ -42,7 +42,8 @@ List<Speech2OrderProduct> searchProducts(
     final phraseResults = fuse.search(palabrasClave.join(' '))
       ..sort((a, b) => b.score.compareTo(a.score));
 
-    // If there are matches for the full phrase, use those
+    ///**
+    // // If there are matches for the full phrase, use those
     if (phraseResults.isNotEmpty) {
       return phraseResults
           .map((result) => productos.firstWhere((p) => p.title == result.item))
@@ -50,34 +51,35 @@ List<Speech2OrderProduct> searchProducts(
           .toList();
     }
 
-    // Search for partial phrase
-    final partialPhraseResults = fuse
-        .search(palabrasClave.join(' ').split(' ').first)
-      ..sort((a, b) => b.score.compareTo(a.score));
+    // // Search for partial phrase
+    // final partialPhraseResults = fuse
+    //     .search(palabrasClave.join(' ').split(' ').first)
+    //   ..sort((a, b) => b.score.compareTo(a.score));
 
-    // If there are matches for the partial phrase, use those
-    if (partialPhraseResults.isNotEmpty) {
-      return partialPhraseResults
-          .map((result) => productos.firstWhere((p) => p.title == result.item))
-          .take(productsToTake)
-          .toList();
-    }
+    // // If there are matches for the partial phrase, use those
+    // if (partialPhraseResults.isNotEmpty) {
+    //   return partialPhraseResults
+    //       .map((result) => productos.firstWhere((p) => p.title == result.item))
+    //       .take(productsToTake)
+    //       .toList();
+    // }
 
-    // Search for prefixes of the keyword
-    final keyword = palabrasClave.join(' ');
-    const minPrefixLength = 4;
-    for (int i = keyword.length - 1; i >= minPrefixLength - 1; i--) {
-      final prefixResults = fuse.search(keyword.substring(0, i + 1))
-        ..sort((a, b) => b.score.compareTo(a.score));
+    // // Search for prefixes of the keyword
+    // final keyword = palabrasClave.join(' ');
+    // const minPrefixLength = 4;
+    // for (int i = keyword.length - 1; i >= minPrefixLength - 1; i--) {
+    //   final prefixResults = fuse.search(keyword.substring(0, i + 1))
+    //     ..sort((a, b) => b.score.compareTo(a.score));
 
-      if (prefixResults.isNotEmpty) {
-        return prefixResults
-            .map(
-                (result) => productos.firstWhere((p) => p.title == result.item))
-            .toList();
-      }
-    }
+    //   if (prefixResults.isNotEmpty) {
+    //     return prefixResults
+    //         .map(
+    //             (result) => productos.firstWhere((p) => p.title == result.item))
+    //         .toList();
+    //   }
+    // }
 
+    /// */
     // Otherwise, combine results for individual keywords with weighted scores
     final results = palabrasClave
         .map((palabra) =>
