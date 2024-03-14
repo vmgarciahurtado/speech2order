@@ -94,94 +94,97 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Container(
-          margin: const EdgeInsets.only(right: 10),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  // If listening is active show the recognized words
-                  _speechToText.isListening
-                      ? _lastWords
-                      // If listening isn't active but could be tell the user
-                      // how to start it, otherwise indicate that speech
-                      // recognition is not yet ready or not supported on
-                      // the target device
-                      : _speechEnabled
-                          ? 'Tap the microphone to start listening...'
-                          : 'Speech not available',
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.only(right: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    // If listening is active show the recognized words
+                    _speechToText.isListening
+                        ? _lastWords
+                        // If listening isn't active but could be tell the user
+                        // how to start it, otherwise indicate that speech
+                        // recognition is not yet ready or not supported on
+                        // the target device
+                        : _speechEnabled
+                            ? 'Tap the microphone to start listening...'
+                            : 'Speech not available',
+                  ),
                 ),
-              ),
-              Expanded(
-                child: _recognitionResult.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: _recognitionResult.length,
-                        itemBuilder: (context, index) {
-                          String title = _recognitionResult[index]['title'];
-                          String code = _recognitionResult[index]['code'];
-                          int quantity = _recognitionResult[index]['quantity'];
+                Expanded(
+                  child: _recognitionResult.isNotEmpty
+                      ? ListView.builder(
+                          itemCount: _recognitionResult.length,
+                          itemBuilder: (context, index) {
+                            String title = _recognitionResult[index]['title'];
+                            String code = _recognitionResult[index]['code'];
+                            int quantity =
+                                _recognitionResult[index]['quantity'];
 
-                          return Dismissible(
-                            key: UniqueKey(),
-                            direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              setState(() {
-                                _recognitionResult.removeAt(index);
-                              });
-                            },
-                            background: Container(
-                              color: Colors.transparent,
-                            ),
-                            secondaryBackground: Container(
-                              color: Colors.red,
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 20),
-                              child:
-                                  const Icon(Icons.delete, color: Colors.white),
-                            ),
-                            child: badge.Badge(
-                              badgeColor: widget.primaryColor,
-                              badgeContent: Padding(
-                                padding: const EdgeInsets.all(2.0),
-                                child: Text(
-                                  '$quantity',
-                                  style: const TextStyle(
-                                      fontSize: 20, color: Colors.white),
-                                ),
+                            return Dismissible(
+                              key: UniqueKey(),
+                              direction: DismissDirection.endToStart,
+                              onDismissed: (direction) {
+                                setState(() {
+                                  _recognitionResult.removeAt(index);
+                                });
+                              },
+                              background: Container(
+                                color: Colors.transparent,
                               ),
-                              child: Card(
-                                color: Colors.white,
-                                margin: const EdgeInsets.all(10),
-                                elevation: 8,
-                                child: ListTile(
-                                  title: Text(
-                                    code,
+                              secondaryBackground: Container(
+                                color: Colors.red,
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 20),
+                                child: const Icon(Icons.delete,
+                                    color: Colors.white),
+                              ),
+                              child: badge.Badge(
+                                badgeColor: widget.primaryColor,
+                                badgeContent: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Text(
+                                    '$quantity',
                                     style: const TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold),
+                                        fontSize: 20, color: Colors.white),
                                   ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(title,
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: widget.primaryColor)),
-                                    ],
+                                ),
+                                child: Card(
+                                  margin: const EdgeInsets.all(10),
+                                  color: Colors.white,
+                                  elevation: 8,
+                                  child: ListTile(
+                                    title: Text(
+                                      code,
+                                      style: const TextStyle(
+                                          fontSize: 18,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(title,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: widget.primaryColor)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      )
-                    : const Text("No results yet"),
-              )
-            ],
+                            );
+                          },
+                        )
+                      : const Text("No results yet"),
+                )
+              ],
+            ),
           ),
         ),
       ),

@@ -42,7 +42,28 @@ class Speech2OrderSelectionDialogState
               int quantity = widget.items[index]['quantity'];
 
               return CheckboxListTile(
-                title: Text('title: $title\ncode: $code\nquantity: $quantity'),
+                title: Card(
+                  color: Colors.white,
+                  elevation: 8,
+                  child: ListTile(
+                    title: Text(
+                      "$code x$quantity",
+                      style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(title,
+                            style: TextStyle(
+                                fontSize: 20, color: widget.primaryColor)),
+                      ],
+                    ),
+                  ),
+                ),
+                checkColor: Colors.white,
                 value: _isSelected[index],
                 onChanged: (bool? value) {
                   setState(() {
