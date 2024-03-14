@@ -13,6 +13,8 @@ dependencies:
     
   speech_to_text: ^6.6.0
   fuzzy: <1.0.0
+  badges: ^2.0.1
+
 
 dev_dependencies:
   flutter_test:

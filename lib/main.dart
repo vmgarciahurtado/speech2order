@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:speech2order/model.dart';
+import 'package:badges/badges.dart' as badge;
+
 import 'package:speech2order/proccess_speech.dart';
 import 'package:speech2order/select_products_dialog.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
@@ -17,7 +19,6 @@ class Speech2OrderPage extends StatefulWidget {
 
 class _Speech2OrderPageState extends State<Speech2OrderPage> {
   final SpeechToText _speechToText = SpeechToText();
-  static const _textStyle = TextStyle(fontSize: 20, color: Colors.black);
   final List<Map<String, dynamic>> _recognitionResult = [];
 
   bool _speechEnabled = false;
@@ -164,22 +165,39 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                               child:
                                   const Icon(Icons.delete, color: Colors.white),
                             ),
-                            child: Card(
-                              color: Colors.white,
-                              margin: const EdgeInsets.all(10),
-                              elevation: 8,
-                              child: ListTile(
-                                title: Text(
-                                  'Título: $title',
-                                  style: _textStyle,
+                            child: badge.Badge(
+                              badgeColor: Theme.of(context).primaryColor,
+                              badgeContent: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: Text(
+                                  '$quantity',
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.white),
                                 ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Código: $code', style: _textStyle),
-                                    Text('Cantidad: $quantity',
-                                        style: _textStyle),
-                                  ],
+                              ),
+                              child: Card(
+                                color: Colors.white,
+                                margin: const EdgeInsets.all(10),
+                                elevation: 8,
+                                child: ListTile(
+                                  title: Text(
+                                    code,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(title,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Theme.of(context)
+                                                  .primaryColor)),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
