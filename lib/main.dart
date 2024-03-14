@@ -90,6 +90,56 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
     }
   }
 
+  void _updateQuantity(int index, int newQuantity) {
+    setState(() {
+      _recognitionResult[index]['quantity'] = newQuantity;
+    });
+  }
+
+  void _showQuantityDialog(int index) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final TextEditingController quantityController = TextEditingController(
+          text: _recognitionResult[index]['quantity'].toString(),
+        );
+
+        return AlertDialog(
+          title: const Text('Cambiar Cantidad'),
+          content: TextField(
+            controller: quantityController,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+              hintText: 'Ingrese la cantidad',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                int newQuantity = int.tryParse(quantityController.text) ?? 1;
+                if (newQuantity > 0) {
+                  _updateQuantity(index, newQuantity);
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('La cantidad debe ser mayor a 0'),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Aceptar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -143,38 +193,41 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                                 child: const Icon(Icons.delete,
                                     color: Colors.white),
                               ),
-                              child: badge.Badge(
-                                badgeColor: widget.primaryColor,
-                                toAnimate: false,
-                                badgeContent: Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: Text(
-                                    '$quantity',
-                                    style: const TextStyle(
-                                        fontSize: 18, color: Colors.white),
-                                  ),
-                                ),
-                                child: Card(
-                                  margin: const EdgeInsets.all(10),
-                                  color: Colors.white,
-                                  elevation: 8,
-                                  child: ListTile(
-                                    title: Text(
-                                      code,
+                              child: InkWell(
+                                onTap: () => _showQuantityDialog(index),
+                                child: badge.Badge(
+                                  badgeColor: widget.primaryColor,
+                                  toAnimate: false,
+                                  badgeContent: Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: Text(
+                                      '$quantity',
                                       style: const TextStyle(
-                                          fontSize: 18,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
+                                          fontSize: 18, color: Colors.white),
                                     ),
-                                    subtitle: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(title,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: widget.primaryColor)),
-                                      ],
+                                  ),
+                                  child: Card(
+                                    margin: const EdgeInsets.all(10),
+                                    color: Colors.white,
+                                    elevation: 8,
+                                    child: ListTile(
+                                      title: Text(
+                                        code,
+                                        style: const TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(title,
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  color: widget.primaryColor)),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
