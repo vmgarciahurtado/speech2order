@@ -106,6 +106,36 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           : 'Speech not available',
                 ),
               ),
+              // Expanded(
+              //   child: _recognitionResult.isNotEmpty
+              //       ? ListView.builder(
+              //           itemCount: _recognitionResult.length,
+              //           itemBuilder: (context, index) {
+              //             String title = _recognitionResult[index]['title'];
+              //             String code = _recognitionResult[index]['code'];
+              //             int quantity = _recognitionResult[index]['quantity'];
+              //             return Card(
+              //               color: Colors.white,
+              //               margin: const EdgeInsets.all(10),
+              //               elevation: 8,
+              //               child: Column(
+              //                 children: [
+              //                   Padding(
+              //                     padding: const EdgeInsets.symmetric(
+              //                         vertical: 15, horizontal: 15),
+              //                     child: Text(
+              //                       'title: $title\ncode: $code\nquantity: $quantity',
+              //                       style: _textStyle,
+              //                       textAlign: TextAlign.start,
+              //                     ),
+              //                   ),
+              //                 ],
+              //               ),
+              //             );
+              //           },
+              //         )
+              //       : const Text("No results yet"),
+              // )
               Expanded(
                 child: _recognitionResult.isNotEmpty
                     ? ListView.builder(
@@ -114,22 +144,44 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           String title = _recognitionResult[index]['title'];
                           String code = _recognitionResult[index]['code'];
                           int quantity = _recognitionResult[index]['quantity'];
-                          return Card(
-                            color: Colors.white,
-                            margin: const EdgeInsets.all(10),
-                            elevation: 8,
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15, horizontal: 15),
-                                  child: Text(
-                                    'title: $title\ncode: $code\nquantity: $quantity',
-                                    style: _textStyle,
-                                    textAlign: TextAlign.start,
-                                  ),
+
+                          return Dismissible(
+                            key: UniqueKey(),
+                            direction: DismissDirection.endToStart,
+                            onDismissed: (direction) {
+                              // Eliminar el elemento de la lista _recognitionResult
+                              setState(() {
+                                _recognitionResult.removeAt(index);
+                              });
+                            },
+                            background: Container(
+                              color: Colors.transparent,
+                            ),
+                            secondaryBackground: Container(
+                              color: Colors.red,
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 20),
+                              child:
+                                  const Icon(Icons.delete, color: Colors.white),
+                            ),
+                            child: Card(
+                              color: Colors.white,
+                              margin: const EdgeInsets.all(10),
+                              elevation: 8,
+                              child: ListTile(
+                                title: Text(
+                                  'Título: $title',
+                                  style: _textStyle,
                                 ),
-                              ],
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('Código: $code', style: _textStyle),
+                                    Text('Cantidad: $quantity',
+                                        style: _textStyle),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },
