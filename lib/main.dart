@@ -96,24 +96,28 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
       body: SafeArea(
         child: Center(
           child: Container(
-            margin: const EdgeInsets.only(right: 15),
+            margin: const EdgeInsets.only(right: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    // If listening is active show the recognized words
-                    _speechToText.isListening
-                        ? _lastWords
-                        // If listening isn't active but could be tell the user
-                        // how to start it, otherwise indicate that speech
-                        // recognition is not yet ready or not supported on
-                        // the target device
-                        : _speechEnabled
-                            ? 'Tap the microphone to start listening...'
-                            : 'Speech not available',
-                  ),
+                StatefulBuilder(
+                  builder: (BuildContext context, StateSetter setState) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        // If listening is active show the recognized words
+                        _speechToText.isListening
+                            ? _lastWords
+                            // If listening isn't active but could be tell the user
+                            // how to start it, otherwise indicate that speech
+                            // recognition is not yet ready or not supported on
+                            // the target device
+                            : _speechEnabled
+                                ? 'Tap the microphone to start listening...'
+                                : 'Speech not available',
+                      ),
+                    );
+                  },
                 ),
                 Expanded(
                   child: _recognitionResult.isNotEmpty
@@ -146,11 +150,11 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                               child: badge.Badge(
                                 badgeColor: widget.primaryColor,
                                 badgeContent: Padding(
-                                  padding: const EdgeInsets.all(2.0),
+                                  padding: const EdgeInsets.all(3.0),
                                   child: Text(
                                     '$quantity',
                                     style: const TextStyle(
-                                        fontSize: 20, color: Colors.white),
+                                        fontSize: 18, color: Colors.white),
                                   ),
                                 ),
                                 child: Card(
