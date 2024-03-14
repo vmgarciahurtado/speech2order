@@ -8,9 +8,12 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
 class Speech2OrderPage extends StatefulWidget {
-  const Speech2OrderPage({Key? key, required this.products}) : super(key: key);
+  const Speech2OrderPage(
+      {Key? key, required this.products, required this.primaryColor})
+      : super(key: key);
 
   final List<Speech2OrderProduct> products;
+  final Color primaryColor;
 
   @override
   // ignore: library_private_types_in_public_api
@@ -70,7 +73,10 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
           List<Map<String, dynamic>> selectedItems = await showDialog(
             context: context,
             builder: (BuildContext context) {
-              return Speech2OrderSelectionDialog(items: response);
+              return Speech2OrderSelectionDialog(
+                items: response,
+                primaryColor: widget.primaryColor,
+              );
             },
           );
 
@@ -88,7 +94,8 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Container(
+          margin: const EdgeInsets.only(right: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
@@ -107,36 +114,6 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                           : 'Speech not available',
                 ),
               ),
-              // Expanded(
-              //   child: _recognitionResult.isNotEmpty
-              //       ? ListView.builder(
-              //           itemCount: _recognitionResult.length,
-              //           itemBuilder: (context, index) {
-              //             String title = _recognitionResult[index]['title'];
-              //             String code = _recognitionResult[index]['code'];
-              //             int quantity = _recognitionResult[index]['quantity'];
-              //             return Card(
-              //               color: Colors.white,
-              //               margin: const EdgeInsets.all(10),
-              //               elevation: 8,
-              //               child: Column(
-              //                 children: [
-              //                   Padding(
-              //                     padding: const EdgeInsets.symmetric(
-              //                         vertical: 15, horizontal: 15),
-              //                     child: Text(
-              //                       'title: $title\ncode: $code\nquantity: $quantity',
-              //                       style: _textStyle,
-              //                       textAlign: TextAlign.start,
-              //                     ),
-              //                   ),
-              //                 ],
-              //               ),
-              //             );
-              //           },
-              //         )
-              //       : const Text("No results yet"),
-              // )
               Expanded(
                 child: _recognitionResult.isNotEmpty
                     ? ListView.builder(
@@ -150,7 +127,6 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                             key: UniqueKey(),
                             direction: DismissDirection.endToStart,
                             onDismissed: (direction) {
-                              // Eliminar el elemento de la lista _recognitionResult
                               setState(() {
                                 _recognitionResult.removeAt(index);
                               });
@@ -166,7 +142,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                                   const Icon(Icons.delete, color: Colors.white),
                             ),
                             child: badge.Badge(
-                              badgeColor: Theme.of(context).primaryColor,
+                              badgeColor: widget.primaryColor,
                               badgeContent: Padding(
                                 padding: const EdgeInsets.all(2.0),
                                 child: Text(
@@ -194,8 +170,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                                       Text(title,
                                           style: TextStyle(
                                               fontSize: 20,
-                                              color: Theme.of(context)
-                                                  .primaryColor)),
+                                              color: widget.primaryColor)),
                                     ],
                                   ),
                                 ),

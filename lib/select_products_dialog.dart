@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 class Speech2OrderSelectionDialog extends StatefulWidget {
   final List<Map<String, dynamic>> items;
+  final Color primaryColor;
 
-  const Speech2OrderSelectionDialog({Key? key, required this.items})
+  const Speech2OrderSelectionDialog(
+      {Key? key, required this.items, required this.primaryColor})
       : super(key: key);
 
   @override
@@ -24,7 +26,11 @@ class Speech2OrderSelectionDialogState
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("Select items to add"),
+      title: const Text(
+        "Select products to add",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      ),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -50,6 +56,10 @@ class Speech2OrderSelectionDialogState
       ),
       actions: [
         ElevatedButton(
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all<Color>(
+                widget.primaryColor), // Here Im having the error
+          ),
           onPressed: () {
             List<Map<String, dynamic>> selectedItems = [];
             for (int i = 0; i < widget.items.length; i++) {
@@ -59,7 +69,10 @@ class Speech2OrderSelectionDialogState
             }
             Navigator.of(context).pop(selectedItems);
           },
-          child: const Text("Accept"),
+          child: const Text(
+            "Accept",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ],
     );
