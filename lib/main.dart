@@ -100,24 +100,20 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                    return Container(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        // If listening is active show the recognized words
-                        _speechToText.isListening
-                            ? _lastWords
-                            // If listening isn't active but could be tell the user
-                            // how to start it, otherwise indicate that speech
-                            // recognition is not yet ready or not supported on
-                            // the target device
-                            : _speechEnabled
-                                ? 'Tap the microphone to start listening...'
-                                : 'Speech not available',
-                      ),
-                    );
-                  },
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    // If listening is active show the recognized words
+                    _speechToText.isListening
+                        ? _lastWords
+                        // If listening isn't active but could be tell the user
+                        // how to start it, otherwise indicate that speech
+                        // recognition is not yet ready or not supported on
+                        // the target device
+                        : _speechEnabled
+                            ? 'Tap the microphone to start listening...'
+                            : 'Speech not available',
+                  ),
                 ),
                 Expanded(
                   child: _recognitionResult.isNotEmpty
@@ -149,6 +145,7 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
                               ),
                               child: badge.Badge(
                                 badgeColor: widget.primaryColor,
+                                toAnimate: false,
                                 badgeContent: Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: Text(
