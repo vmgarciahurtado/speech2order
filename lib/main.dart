@@ -105,6 +105,12 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
           text: _recognitionResult[index]['quantity'].toString(),
         );
 
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          quantityController.selection = TextSelection.fromPosition(
+            TextPosition(offset: quantityController.text.length),
+          ); // Set cursor position after frame build
+        });
+
         return AlertDialog(
           title: const Text('Cambiar Cantidad'),
           content: TextField(
