@@ -71,14 +71,15 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
         } else {
           // ignore: use_build_context_synchronously
           List<Map<String, dynamic>> selectedItems = await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return Speech2OrderSelectionDialog(
-                items: response,
-                primaryColor: widget.primaryColor,
-              );
-            },
-          );
+                context: context,
+                builder: (BuildContext context) {
+                  return Speech2OrderSelectionDialog(
+                    items: response,
+                    primaryColor: widget.primaryColor,
+                  );
+                },
+              ) ??
+              [];
 
           if (selectedItems.isNotEmpty) {
             setState(() {
