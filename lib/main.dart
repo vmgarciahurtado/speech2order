@@ -119,6 +119,19 @@ class _Speech2OrderPageState extends State<Speech2OrderPage> {
             decoration: const InputDecoration(
               hintText: 'Ingrese la cantidad',
             ),
+            onSubmitted: (text) {
+              int newQuantity = int.tryParse(quantityController.text) ?? 1;
+              if (newQuantity > 0) {
+                _updateQuantity(index, newQuantity);
+                Navigator.pop(context);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('La cantidad debe ser mayor a 0'),
+                  ),
+                );
+              }
+            },
           ),
           actions: [
             TextButton(
